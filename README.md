@@ -7,7 +7,7 @@ zugleich ein Plugin-Marketplace (`comply4u-mods`).
 
 | Mod | Was er tut |
 | --- | --- |
-| `kontextanzeige` | Zeigt die Füllung des Kontextfensters in der Statuszeile (`Kontext 42 % · 84k / 200k`). Ab 70 % erscheint ein Hinweis, ab 85 % die Aufforderung, einen neuen Chat zu beginnen, jeweils einmal als Einblendung. Die Schwellen stehen in `HINWEIS_AB` und `WARNUNG_AB`. |
+| `kontextanzeige` | Zeigt die Füllung des Kontextfensters in Prozent. Claude beginnt jede Antwort mit einer Zeile wie *Kontext: 21 %*, ab 70 % mit dem Zusatz „bald neuen Chat beginnen“, ab 85 % „jetzt neuen Chat beginnen“. Die Zahl wird der Nachricht dafür unsichtbar beigelegt. Wo die Oberfläche es zeichnet (Terminal), steht sie zusätzlich in der Statuszeile und als Band über dem Eingabefeld; die Desktop-App zeichnet bei Cloud-Sitzungen beides nicht, deshalb die Zeile in der Antwort. Die Schwellen stehen in `HINWEIS_AB` und `WARNUNG_AB`. |
 
 ## Installation
 

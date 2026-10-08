@@ -14,10 +14,12 @@ OUT=cloud/setup.sh
   echo '('
   echo 'set -e'
   echo 'MP="$HOME/.claude/comply4u-mods"'
-  find .claude-plugin plugins -type f ! -path '*/types/*' ! -name '*.test.ts' | sort | while read -r f; do
+  find .claude-plugin plugins -type f ! -path '*/.claude-plugin/types/*' ! -name '*.test.ts' | sort | while read -r f; do
     echo "mkdir -p \"\$MP/$(dirname "$f")\""
     echo "cat > \"\$MP/$f\" <<'__ENDE_DER_DATEI__'"
     cat "$f"
+    # Ohne abschließenden Zeilenumbruch liefe die Endmarke in die letzte Zeile.
+    [ -z "$(tail -c1 "$f")" ] || echo
     echo '__ENDE_DER_DATEI__'
   done
   echo 'if command -v claude >/dev/null 2>&1; then'

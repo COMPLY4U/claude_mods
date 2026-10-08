@@ -1,43 +1,3 @@
-#!/bin/bash
-# ERZEUGT von tools/cloud_setup_erzeugen.sh – nicht von Hand ändern.
-# Schreibt die Mods dieses Repositorys bei jedem Start einer Cloud-Sitzung
-# nach ~/.claude/comply4u-mods und installiert sie für den Benutzer.
-# Bricht den Sitzungsstart nie ab.
-(
-set -e
-MP="$HOME/.claude/comply4u-mods"
-mkdir -p "$MP/.claude-plugin"
-cat > "$MP/.claude-plugin/marketplace.json" <<'__ENDE_DER_DATEI__'
-{
-  "name": "comply4u-mods",
-  "owner": {
-    "name": "COMPLY4U"
-  },
-  "plugins": [
-    {
-      "name": "kontextanzeige",
-      "source": "./plugins/kontextanzeige",
-      "description": "Zeigt die Füllung des Kontextfensters in Prozent: als Zeile am Anfang jeder Antwort und, wo die Oberfläche es zeichnet, in der Statuszeile. Warnt ab 70 % und 85 %."
-    }
-  ],
-  "description": "Eigene Mods von COMPLY4U für Claude Code"
-}
-__ENDE_DER_DATEI__
-mkdir -p "$MP/plugins/kontextanzeige/.claude-plugin"
-cat > "$MP/plugins/kontextanzeige/.claude-plugin/plugin.json" <<'__ENDE_DER_DATEI__'
-{
-  "name": "kontextanzeige",
-  "version": "0.2.0",
-  "description": "Zeigt die Füllung des Kontextfensters in Prozent: als Zeile am Anfang jeder Antwort und, wo die Oberfläche es zeichnet, in der Statuszeile. Warnt ab 70 % und 85 %.",
-  "types": "./types/index.d.ts"
-}
-__ENDE_DER_DATEI__
-mkdir -p "$MP/plugins/kontextanzeige/hooks"
-cat > "$MP/plugins/kontextanzeige/hooks/hooks.json" <<'__ENDE_DER_DATEI__'
-{"modules": ["./register.tsx"]}
-__ENDE_DER_DATEI__
-mkdir -p "$MP/plugins/kontextanzeige/hooks"
-cat > "$MP/plugins/kontextanzeige/hooks/register.tsx" <<'__ENDE_DER_DATEI__'
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, SessionContextUsage } from 'claude-code'
 
@@ -143,19 +103,3 @@ export const register: Register = on => {
     )
   })
 }
-__ENDE_DER_DATEI__
-mkdir -p "$MP/plugins/kontextanzeige/types"
-cat > "$MP/plugins/kontextanzeige/types/index.d.ts" <<'__ENDE_DER_DATEI__'
-export type Zeile = string | null
-
-declare module 'claude-code' {
-  interface PluginState {
-    kontextanzeige: { zeile: Zeile }
-  }
-}
-__ENDE_DER_DATEI__
-if command -v claude >/dev/null 2>&1; then
-  claude plugin marketplace add "$MP" >/dev/null 2>&1 || true
-  claude plugin install kontextanzeige@comply4u-mods --scope user >/dev/null 2>&1 || true
-fi
-) || echo "comply4u-mods: Einrichtung übersprungen" >&2

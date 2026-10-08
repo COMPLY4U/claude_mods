@@ -1,11 +1,14 @@
 {
   "name": "comply4u-mods",
-  "owner": { "name": "COMPLY4U" },
+  "owner": {
+    "name": "COMPLY4U"
+  },
   "plugins": [
     {
       "name": "kontextanzeige",
       "source": "./plugins/kontextanzeige",
-      "description": "Zeigt die Füllung des Kontextfensters als Prozentangabe in der Statuszeile und warnt ab 70 % und 85 %."
+      "description": "Zeigt die Füllung des Kontextfensters in Prozent: als Zeile am Anfang jeder Antwort und, wo die Oberfläche es zeichnet, in der Statuszeile. Warnt ab 70 % und 85 %."
     }
-  ]
+  ],
+  "description": "Eigene Mods von COMPLY4U für Claude Code"
 }

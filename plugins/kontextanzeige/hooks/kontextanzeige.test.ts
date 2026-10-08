@@ -1,5 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 
+import { antwortzeile, anweisung } from './register'
+
 const messung = (percent: number | undefined) => ({
   context: { window: 200_000, ...(percent === undefined ? {} : { percent, tokens: percent * 2000 }) },
   rateLimits: [],
@@ -33,4 +35,14 @@ test('zeigt die Prozentangabe und warnt je Schwelle genau einmal', async ($, on)
   await $.session.measure(messung(20))
   await $.session.measure(messung(71))
   expect(toasts.length).toBe(3)
+})
+
+test('Antwortzeile und Beilage für das Modell', () => {
+  expect(antwortzeile(69)).toBe('_Kontext: 69 %_')
+  expect(antwortzeile(70)).toContain('bald neuen Chat')
+  expect(antwortzeile(85)).toContain('jetzt neuen Chat')
+  expect(anweisung({ window: 1_000_000 })).toBe(undefined)
+  const text = anweisung({ window: 1_000_000, tokens: 212_000, percent: 21 }) ?? ''
+  expect(text).toContain('zu 21 % gefüllt (212k von 1000k Token)')
+  expect(text).toContain('_Kontext: 21 %_')
 })
