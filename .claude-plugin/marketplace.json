@@ -1,0 +1,11 @@
+{
+  "name": "comply4u-mods",
+  "owner": { "name": "COMPLY4U" },
+  "plugins": [
+    {
+      "name": "kontextanzeige",
+      "source": "./plugins/kontextanzeige",
+      "description": "Zeigt die Füllung des Kontextfensters als Prozentangabe in der Statuszeile und warnt ab 70 % und 85 %."
+    }
+  ]
+}
