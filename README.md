@@ -13,11 +13,15 @@ zugleich ein Plugin-Marketplace (`comply4u-mods`).
 
 ### Cloud-Sitzungen (Claude-App, claude.ai/code)
 
-Den Inhalt von [`cloud/setup.sh`](cloud/setup.sh) in der Cloud-Umgebung unter
-**Edit → Setup script** einfügen (bzw. anhängen). Er läuft bei jedem neuen Chat
-dieser Umgebung, unabhängig vom gewählten Repository. Das Skript bringt die
-Mods selbst mit und braucht deshalb keinen Zugriff auf dieses (private)
-Repository.
+Den Inhalt von [`cloud/setup.sh`](cloud/setup.sh) **einmal** in der Cloud-Umgebung unter
+**Umgebung bearbeiten → Setup-Skript** einfügen. Das Skript holt bei jedem neuen Chat die
+aktuelle Fassung dieses Repositorys und installiert alle Mods des Marketplace — unabhängig
+davon, welches Repository im Chat gewählt ist. Danach wird es nie wieder geändert:
+Änderungen an den Mods kommen über GitHub.
+
+Ob es geklappt hat, steht in `~/.claude/comply4u-mods-setup.log` (Stand des Repositorys,
+installierte Mods, sonst der Grund). Ist GitHub nicht erreichbar, wird nichts installiert,
+und der Sitzungsstart läuft trotzdem normal weiter.
 
 ### Lokal (Terminal oder Desktop-App)
 
@@ -32,5 +36,7 @@ ist dann in jedem Chat aktiv.
 
 1. Datei unter `plugins/<mod>/` ändern.
 2. `claude plugin validate plugins/<mod>` und `claude plugin test plugins/<mod>`.
-3. `tools/cloud_setup_erzeugen.sh` ausführen und `cloud/setup.sh` mit committen.
-4. In der Cloud-Umgebung das Setup-Skript durch die neue Fassung ersetzen.
+3. Nach `main` pushen. Der nächste neue Chat hat die neue Fassung.
+
+Ein neuer Mod wird in `.claude-plugin/marketplace.json` eingetragen; das Setup-Skript
+installiert jeden Eintrag dort.
