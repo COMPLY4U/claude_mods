@@ -8,6 +8,11 @@
       "name": "kontextanzeige",
       "source": "./plugins/kontextanzeige",
       "description": "Zeigt die Füllung des Kontextfensters in Prozent: als Zeile am Anfang jeder Antwort und, wo die Oberfläche es zeichnet, in der Statuszeile. Warnt ab 70 % und 85 %."
+    },
+    {
+      "name": "mod-werkstatt",
+      "source": "./plugins/mod-werkstatt",
+      "description": "Skill mods-bauen: wie Mods bei COMPLY4U gebaut, getestet und verteilt werden."
     }
   ],
   "description": "Eigene Mods von COMPLY4U für Claude Code"
