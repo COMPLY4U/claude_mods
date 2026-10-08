@@ -78,8 +78,11 @@ Antwort stehen soll, gehört in **einen** Mod und **einen** Zitatblock.
 - `context.percent`, `context.tokens`, `context.window` – fehlen bis zur ersten Antwort eines
   Chats und direkt nach dem Zusammenfassen. Das ist kein Fehler; zeige dann einen Hinweis
   („wird ab der nächsten Antwort gemessen“), damit sichtbar ist, dass der Mod läuft.
-- `rateLimits[]` mit `kind` (`five_hour`, `seven_day`), `percentUsed`, `resetsAt`.
-- `cost` – was die Sitzung bisher gekostet hat, wo die Umgebung das führt.
+- `rateLimits[]` mit `kind` (`five_hour`, `seven_day`), `percentUsed`, `resetsAt` – **in
+  Cloud-Sitzungen leer** (gemessen nach vielen Antworten: `[]`). Eine Anzeige für das
+  5-Stunden- oder Wochenfenster ist dort nicht möglich; nicht erneut versuchen, ohne vorher
+  zu messen, ob sich das geändert hat.
+- `cost.usd` – was die Sitzung bisher gekostet hat; in Cloud-Sitzungen vorhanden.
 
 `on('session.measure', …)` meldet, wenn sich einer dieser Werte ändert (`e.changed`).
 
