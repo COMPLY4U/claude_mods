@@ -1,6 +1,6 @@
 {
   "name": "kontextanzeige",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Zeigt die Füllung des Kontextfensters in Prozent: als Zeile am Anfang jeder Antwort und, wo die Oberfläche es zeichnet, in der Statuszeile. Warnt ab 70 % und 85 %.",
   "types": "./types/index.d.ts"
 }

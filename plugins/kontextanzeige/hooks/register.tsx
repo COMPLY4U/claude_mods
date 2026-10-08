@@ -13,36 +13,56 @@ const zeile = atom({ plugin: 'kontextanzeige', key: 'zeile' } as const, null)
 export const HINWEIS_AB = 70
 export const WARNUNG_AB = 85
 
-const tausend = (n: number) => `${Math.round(n / 1000)}k`
+/** Tausender in k, mit deutschem Tausenderpunkt: 251k, 1.000k. */
+const tausend = (n: number) => `${String(Math.round(n / 1000)).replace(/\B(?=(\d{3})+$)/g, '.')}k`
+
+/** Segmente des Balkens; eines steht für 5 %. */
+export const SEGMENTE = 20
+
+/** Der Balken: gefüllte Segmente für die Füllung, aufgerundet erst ab einem halben Segment. */
+export function balken(percent: number): string {
+  const voll = Math.min(SEGMENTE, Math.max(0, Math.round((percent / 100) * SEGMENTE)))
+  return '█'.repeat(voll) + '░'.repeat(SEGMENTE - voll)
+}
+
+/** Farbpunkt und Hinweis je Stufe: grün bis 69 %, gelb ab 70 %, rot ab 85 %. */
+function ampel(percent: number): { punkt: string; hinweis: string } {
+  if (percent >= WARNUNG_AB) return { punkt: '🔴', hinweis: ' · **jetzt neuen Chat beginnen**' }
+  if (percent >= HINWEIS_AB) return { punkt: '🟡', hinweis: ' · bald neuen Chat beginnen' }
+  return { punkt: '🟢', hinweis: '' }
+}
 
 export function statuszeile(context: SessionContextUsage): string {
   const { percent, tokens, window } = context
   if (percent === undefined) return 'Kontext: – (erscheint nach der ersten Antwort)'
-  const menge = tokens === undefined ? '' : ` · ${tausend(tokens)} / ${tausend(window)}`
-  if (percent >= WARNUNG_AB) return `⛔ Kontext ${percent} %${menge} – jetzt neuen Chat beginnen`
-  if (percent >= HINWEIS_AB) return `⚠ Kontext ${percent} %${menge} – bald neuen Chat beginnen`
-  return `Kontext ${percent} %${menge}`
+  const menge = tokens === undefined ? '' : ` ${tausend(tokens)} / ${tausend(window)}`
+  const { punkt, hinweis } = ampel(percent)
+  return `${punkt} Kontext ${percent} % ${balken(percent)}${menge}${hinweis.replace(/\*\*/g, '')}`
 }
 
 /**
- * Die Zeile, mit der Claude seine Antwort beginnt. Sie ist die einzige Anzeige,
- * die jede Oberfläche zeigt: Die Desktop-App zeichnet bei Cloud-Sitzungen
- * weder Statuszeile noch Band noch Einblendung.
+ * Die Zeile, mit der Claude seine Antwort beginnt, als Zitatblock: Sie ist die
+ * einzige Anzeige, die jede Oberfläche zeigt. Die Desktop-App zeichnet bei
+ * Cloud-Sitzungen weder Statuszeile noch Band noch Einblendung.
  */
-export function antwortzeile(percent: number): string {
-  if (percent >= WARNUNG_AB) return `_⛔ Kontext: ${percent} % – jetzt neuen Chat beginnen_`
-  if (percent >= HINWEIS_AB) return `_⚠ Kontext: ${percent} % – bald neuen Chat beginnen_`
-  return `_Kontext: ${percent} %_`
+export function antwortzeile(context: SessionContextUsage): string {
+  const { percent, tokens, window } = context
+  if (percent === undefined) return '> ⚪ **Kontext** · wird ab der nächsten Antwort gemessen'
+  const menge = tokens === undefined ? '' : ` ${tausend(tokens)} / ${tausend(window)}`
+  const { punkt, hinweis } = ampel(percent)
+  return `> ${punkt} **Kontext ${percent} %** \`${balken(percent)}\`${menge}${hinweis}`
 }
 
 /** Was der Nachricht unsichtbar für das Modell beiliegt. */
-export function anweisung(context: SessionContextUsage): string | undefined {
-  if (context.percent === undefined) return undefined
-  const menge = context.tokens === undefined ? '' : ` (${tausend(context.tokens)} von ${tausend(context.window)} Token)`
+export function anweisung(context: SessionContextUsage): string {
+  const stand =
+    context.percent === undefined
+      ? 'Die Füllung des Kontextfensters ist noch nicht gemessen (erste Nachricht oder direkt nach dem Zusammenfassen).'
+      : `Das Kontextfenster dieses Chats ist vor dieser Nachricht zu ${context.percent} % gefüllt.`
   return [
-    `[Mod kontextanzeige] Das Kontextfenster dieses Chats ist vor dieser Nachricht zu ${context.percent} % gefüllt${menge}.`,
+    `[Mod kontextanzeige] ${stand}`,
     'Beginne deine Antwort mit genau dieser Zeile und einer Leerzeile danach, ohne sie zu kommentieren:',
-    antwortzeile(context.percent),
+    antwortzeile(context),
   ].join('\n')
 }
 
@@ -89,7 +109,7 @@ export const register: Register = on => {
   on('prompt.submit', async ($, e, next) => {
     if (!VON_DER_PERSON.has(e.origin.kind)) return next(e)
     const text = anweisung((await $.session.usage()).context)
-    return next(text === undefined ? e : { ...e, context: [...(e.context ?? []), text] })
+    return next({ ...e, context: [...(e.context ?? []), text] })
   }).catch(($, e, next) => next(e)) // ein Fehler hier hält keine Nachricht auf
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
