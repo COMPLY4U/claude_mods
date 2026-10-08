@@ -16,8 +16,11 @@ zugleich ein Plugin-Marketplace (`comply4u-mods`).
 Den Inhalt von [`cloud/setup.sh`](cloud/setup.sh) **einmal** in der Cloud-Umgebung unter
 **Umgebung bearbeiten → Setup-Skript** einfügen. Das Skript holt bei jedem neuen Chat die
 aktuelle Fassung dieses Repositorys und installiert alle Mods des Marketplace — unabhängig
-davon, welches Repository im Chat gewählt ist. Danach wird es nie wieder geändert:
-Änderungen an den Mods kommen über GitHub.
+davon, welches Repository im Chat gewählt ist.
+
+Die Cloud-Umgebung speichert das Ergebnis des Setup-Skripts und führt es erst wieder
+aus, wenn sich sein Text ändert. Eine neue Fassung der Mods kommt deshalb an, sobald
+die Zahl in der Zeile `# ABRUF=1` erhöht und das Skript gespeichert wird.
 
 Ob es geklappt hat, steht in `~/.claude/comply4u-mods-setup.log` (Stand des Repositorys,
 installierte Mods, sonst der Grund). Ist GitHub nicht erreichbar, wird nichts installiert,

@@ -4,6 +4,11 @@
 # Marketplace für den Benutzer. Einmal eintragen, danach nie wieder ändern:
 # Änderungen an den Mods kommen über GitHub.
 # Protokoll: ~/.claude/comply4u-mods-setup.log. Bricht den Sitzungsstart nie ab.
+#
+# Die Cloud-Umgebung speichert das Ergebnis dieses Skripts und führt es erst
+# wieder aus, wenn sich sein Text ändert. Um eine neue Fassung der Mods zu
+# holen, die Zahl hier um eins erhöhen und speichern:
+# ABRUF=1
 (
   ZIEL="$HOME/.claude/comply4u-mods"
   mkdir -p "$HOME/.claude"
