@@ -9,13 +9,6 @@ zugleich ein Plugin-Marketplace (`comply4u-mods`).
 | --- | --- |
 | `kontextanzeige` | Zeigt die Füllung des Kontextfensters. Claude beginnt jede Antwort mit einer Zeile wie > 🟢 **Kontext 25 %** `█████░░░░░░░░░░░░░░░` 251k / 1.000k — gelb ab 70 % (bald neuen Chat beginnen), rot ab 85 % (jetzt neuen Chat beginnen). Die Zahl wird der Nachricht dafür unsichtbar beigelegt. Wo die Oberfläche es zeichnet (lokale Sitzungen), steht sie zusätzlich in der Statuszeile und als Band über dem Eingabefeld; die Desktop-App zeichnet bei Cloud-Sitzungen beides nicht. Schwellen: `HINWEIS_AB`, `WARNUNG_AB`. |
 
-## Arbeitsplatz-Werkzeug „Repos aktualisieren“
-
-[`arbeitsplatz/`](arbeitsplatz/LIESMICH.md): Ein Doppelklick holt den aktuellen Stand
-aller COMPLY4U-Repositories nach `C:\GitHub` – neue werden heruntergeladen, vorhandene
-gefahrlos aktualisiert, Claude-Zweige lassen sich im Menü auswählen. Ersetzt die
-persönlichen `.cmd`-Dateien zum Herunterladen. Einrichtung in der LIESMICH.
-
 ## Installation
 
 ### Cloud-Sitzungen (Claude-App, claude.ai/code)
